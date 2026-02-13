@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Will you be my Valentine?</title>
+  <style>
+    :root{
+      --bg1:#ffedf3;
+      --bg2:#ffe6fa;
+      --card:#ffffffcc;
+      --text:#2b2b2b;
+      --pink:#ff4d8d;
+      --pink2:#ff2d6d;
+      --shadow: 0 18px 60px rgba(0,0,0,.12);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background: radial-gradient(1200px 600px at 20% 20%, var(--bg2), transparent),
+                  radial-gradient(1000px 700px at 80% 30%, #ffe0f0, transparent),
+                  linear-gradient(135deg, var(--bg1), #fff);
+      overflow:hidden;
+    }
+
+    .card{
+      width:min(560px, 92vw);
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border:1px solid rgba(255,255,255,.6);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:28px 24px 22px;
+      text-align:center;
+      position:relative;
+      z-index:2;
+    }
+
+    h1{
+      margin:10px 0 14px;
+      font-size: clamp(24px, 4.2vw, 34px);
+      letter-spacing:.2px;
+    }
+    p{margin:8px 0 0; opacity:.85}
+
+    .gif{
+      width:220px;
+      height:220px;
+      border-radius:22px;
+      overflow:hidden;
+      margin:0 auto 14px;
+      box-shadow: 0 14px 40px rgba(255,77,141,.18);
+      border: 1px solid rgba(255,77,141,.22);
+      background:#fff;
+      display:grid;
+      place-items:center;
+    }
+    .gif img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .btnRow{
+      margin-top:18px;
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border:0;
+      padding:12px 18px;
+      border-radius:999px;
+      font-weight:700;
+      cursor:pointer;
+      font-size:16px;
+      transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+      box-shadow: 0 12px 30px rgba(0,0,0,.08);
+      user-select:none;
+    }
+    button:active{transform: translateY(1px) scale(.99)}
+
+    .yes{
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      color:white;
+    }
+    .yes:hover{box-shadow: 0 16px 38px rgba(255,45,109,.26)}
+
+    .no{
+      background:white;
+      color:var(--pink2);
+      border:1px solid rgba(255,45,109,.25);
+    }
+    .no:hover{box-shadow: 0 16px 38px rgba(255,45,109,.12)}
+
+    .msg{
+      margin-top:14px;
+      min-height:34px;
+      font-size:18px;
+      font-weight:650;
+    }
+
+    /* Confetti hearts */
+    .float{
+      position:fixed;
+      top:-10vh;
+      left:0;
+      will-change: transform, opacity;
+      z-index:1;
+      pointer-events:none;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.12));
+      font-size:22px;
+      opacity:.95;
+    }
+
+    /* Modal */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.35);
+      display:none;
+      place-items:center;
+      z-index:10;
+      padding:16px;
+    }
+    .modal{
+      width:min(420px, 92vw);
+      background:#fff;
+      border-radius:22px;
+      padding:18px 18px 16px;
+      box-shadow: var(--shadow);
+      text-align:center;
+    }
+    .modal h2{margin:6px 0 10px; font-size:22px}
+    .modal p{margin:0 0 14px}
+    .small{font-size:14px; opacity:.75; margin-top:10px}
+
+    .footer{
+      margin-top:10px;
+      font-size:13px;
+      opacity:.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="gif">
+      <!-- Replace the src with YOUR favorite GIF link -->
+      <img
+        src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+        alt="Cute valentine gif"
+      />
+    </div>
+
+    <h1>Will you be my Valentine? 💌</h1>
+    <p>(Only one correct answer… 😌)</p>
+
+    <div class="btnRow">
+      <button class="yes" id="yesBtn">Yes 💖</button>
+      <button class="no" id="noBtn">No 🙈</button>
+    </div>
+
+    <div class="msg" id="msg"></div>
+    <div class="footer">Made with love ✨</div>
+  </div>
+
+  <!-- Are you sure modal -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h2>Are you sure? 🥺</h2>
+      <p>I’ll be really sad…</p>
+      <div class="btnRow">
+        <button class="yes" id="reconsiderBtn">Okay fine, YES 💘</button>
+        <button class="no" id="stillNoBtn">Still No 😶</button>
+      </div>
+      <div class="small">(You can change your mind anytime 😄)</div>
+    </div>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const msg = document.getElementById("msg");
+    const overlay = document.getElementById("overlay");
+    const reconsiderBtn = document.getElementById("reconsiderBtn");
+    const stillNoBtn = document.getElementById("stillNoBtn");
+
+    let showerRunning = false;
+
+    function startShower() {
+      if (showerRunning) return;
+      showerRunning = true;
+
+      msg.textContent = "YAYYY!! 💖😍🥰 You just made my day!";
+      msg.style.color = "#ff2d6d";
+
+      const emojis = ["💖","💘","💕","💝","❤️","😍","🥰","✨","😘","💞"];
+
+      // spawn a bunch quickly
+      for (let i = 0; i < 120; i++) {
+        setTimeout(() => spawnFloat(emojis[Math.floor(Math.random()*emojis.length)]), i * 35);
+      }
+
+      // and a gentle ongoing shower for a bit
+      const interval = setInterval(() => {
+        for (let i = 0; i < 6; i++) spawnFloat(emojis[Math.floor(Math.random()*emojis.length)]);
+      }, 280);
+
+      setTimeout(() => clearInterval(interval), 6000);
+      setTimeout(() => (showerRunning = false), 6500);
+    }
+
+    function spawnFloat(char) {
+      const el = document.createElement("div");
+      el.className = "float";
+      el.textContent = char;
+
+      const startX = Math.random() * 100; // vw
+      const size = 18 + Math.random() * 22;
+
+      el.style.left = startX + "vw";
+      el.style.fontSize = size + "px";
+
+      document.body.appendChild(el);
+
+      const drift = (Math.random() * 30 - 15); // vw drift
+      const duration = 2500 + Math.random() * 2200;
+      const rotate = (Math.random() * 360 - 180);
+
+      const startY = -12; // vh
+      const endY = 112;   // vh
+
+      const start = performance.now();
+
+      function tick(now) {
+        const t = Math.min(1, (now - start) / duration);
+        const ease = 1 - Math.pow(1 - t, 3);
+
+        const x = startX + drift * ease;
+        const y = startY + (endY - startY) * ease;
+        const r = rotate * ease;
+
+        el.style.transform = `translate(${x}vw, ${y}vh) rotate(${r}deg)`;
+        el.style.opacity = String(1 - t * 0.9);
+
+        if (t < 1) requestAnimationFrame(tick);
+        else el.remove();
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    yesBtn.addEventListener("click", () => {
+      overlay.style.display = "none";
+      startShower();
+    });
+
+    noBtn.addEventListener("click", () => {
+      overlay.style.display = "grid";
+      msg.textContent = "";
+    });
+
+    reconsiderBtn.addEventListener("click", () => {
+      overlay.style.display = "none";
+      startShower();
+    });
+
+    stillNoBtn.addEventListener("click", () => {
+      overlay.style.display = "none";
+      msg.textContent = "Okay… I’ll ask again later 😔💔";
+      msg.style.color = "#444";
+    });
+
+    // Close modal if user clicks outside it
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) overlay.style.display = "none";
+    });
+  </script>
+</body>
+</html>
