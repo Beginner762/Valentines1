@@ -2,287 +2,641 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Will you be my Valentine?</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Valentine 💘</title>
+
   <style>
     :root{
-      --bg1:#ffedf3;
-      --bg2:#ffe6fa;
-      --card:#ffffffcc;
-      --text:#2b2b2b;
-      --pink:#ff4d8d;
-      --pink2:#ff2d6d;
-      --shadow: 0 18px 60px rgba(0,0,0,.12);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--text);
-      background: radial-gradient(1200px 600px at 20% 20%, var(--bg2), transparent),
-                  radial-gradient(1000px 700px at 80% 30%, #ffe0f0, transparent),
-                  linear-gradient(135deg, var(--bg1), #fff);
-      overflow:hidden;
+      --bg: url("https://media.giphy.com/media/KZoFWq3X8t5S1OzDCv/giphy.gif"); /* windy trees */
+      --txt: #121212;
+      --glass: rgba(255,255,255,.70);
+      --glass2: rgba(255,255,255,.35);
+      --shadow: 0 18px 55px rgba(0,0,0,.22);
     }
 
-    .card{
-      width:min(560px, 92vw);
-      background:var(--card);
-      backdrop-filter: blur(10px);
-      border:1px solid rgba(255,255,255,.6);
-      border-radius:28px;
-      box-shadow:var(--shadow);
-      padding:28px 24px 22px;
-      text-align:center;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--txt);
+      overflow:hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ===== GIF background ===== */
+    .bg{
+      position:fixed; inset:0;
+      background-image: var(--bg);
+      background-size: cover;
+      background-position:center;
+      transform: scale(1.06);
+      filter: saturate(1.05) contrast(1.03);
+    }
+    .vignette{
+      position:fixed; inset:0;
+      background:
+        radial-gradient(60% 60% at 50% 35%, rgba(255,255,255,.22), rgba(255,255,255,0) 60%),
+        linear-gradient(to bottom, rgba(0,0,0,.22), rgba(0,0,0,.10));
+      pointer-events:none;
+    }
+
+    /* ===== Spring-only clouds ===== */
+    .clouds{position:fixed; inset:0; pointer-events:none; opacity:0; transition:opacity .55s ease}
+    body.spring .clouds{opacity:1}
+    .cloud{
+      position:absolute;
+      width:280px; height:90px;
+      background: rgba(255,255,255,.88);
+      border-radius: 999px;
+      box-shadow: 0 12px 35px rgba(0,0,0,.12);
+      animation: drift linear infinite;
+    }
+    .cloud:before,.cloud:after{
+      content:"";
+      position:absolute;
+      background: rgba(255,255,255,.92);
+      border-radius:999px;
+    }
+    .cloud:before{width:120px;height:120px; left:30px; top:-55px}
+    .cloud:after{width:150px;height:150px; left:120px; top:-75px}
+    @keyframes drift{ from{transform:translateX(-40vw)} to{transform:translateX(140vw)} }
+    .c1{top:10%; left:-40vw; animation-duration:55s}
+    .c2{top:26%; left:-60vw; width:340px; height:105px; animation-duration:70s; opacity:.85}
+    .c3{top:44%; left:-50vw; width:220px; height:72px; animation-duration:60s; opacity:.75}
+
+    /* ===== Floating hearts layer ===== */
+    #floatLayer{
+      position:fixed; inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:5;
+    }
+    .float{
+      position:absolute;
+      font-size: 22px;
+      animation: rise linear forwards;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.15));
+      will-change: transform, opacity;
+    }
+    @keyframes rise{
+      from{transform: translateY(12px) scale(.95); opacity:0}
+      10%{opacity:1}
+      to{transform: translateY(-120vh) scale(1.2); opacity:0}
+    }
+
+    /* ===== Layout ===== */
+    .wrap{
       position:relative;
+      height:100%;
+      display:grid;
+      place-items:center;
+      padding:18px;
       z-index:2;
     }
 
-    h1{
-      margin:10px 0 14px;
-      font-size: clamp(24px, 4.2vw, 34px);
-      letter-spacing:.2px;
-    }
-    p{margin:8px 0 0; opacity:.85}
-
-    .gif{
-      width:220px;
-      height:220px;
-      border-radius:22px;
+    /* Not a bland box: cute blob glass panel */
+    .panel{
+      width:min(900px, 94vw);
+      padding:18px 18px 16px;
+      background: linear-gradient(135deg, var(--glass), var(--glass2));
+      border: 1px solid rgba(255,255,255,.58);
+      border-radius: 42px 56px 48px 60px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(9px);
+      position:relative;
       overflow:hidden;
-      margin:0 auto 14px;
-      box-shadow: 0 14px 40px rgba(255,77,141,.18);
-      border: 1px solid rgba(255,77,141,.22);
-      background:#fff;
-      display:grid;
-      place-items:center;
     }
-    .gif img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
+    .panel:before{
+      content:"";
+      position:absolute; inset:-90px -130px auto auto;
+      width:280px; height:280px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,192,203,.65), rgba(255,255,255,0) 60%);
+      transform: rotate(14deg);
+      pointer-events:none;
     }
 
-    .btnRow{
-      margin-top:18px;
+    .top{
       display:flex;
-      gap:12px;
+      gap:16px;
+      align-items:center;
       justify-content:center;
       flex-wrap:wrap;
     }
 
-    button{
+    .gifBubble{
+      width:min(250px, 70vw);
+      aspect-ratio: 1 / 1;
+      border-radius: 36px;
+      overflow:hidden;
+      box-shadow: 0 14px 35px rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.60);
+      transform: rotate(-1.2deg);
+      background: rgba(255,255,255,.20);
+      flex: 0 0 auto;
+    }
+    .gifBubble img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .copy{
+      text-align:center;
+      padding: 6px 6px;
+      max-width: 520px;
+      flex: 1 1 320px;
+    }
+
+    .q{
+      margin:10px 0 10px;
+      font-size: clamp(22px, 4.6vw, 42px);
+      line-height:1.08;
+      font-weight: 950;
+      text-shadow: 0 2px 14px rgba(255,255,255,.35);
+    }
+    .hint{
+      margin:0 0 12px;
+      opacity:.90;
+      font-weight:750;
+    }
+
+    /* Sticker-like buttons (not bland) */
+    .choices{
+      display:flex;
+      gap:14px;
+      justify-content:center;
+      flex-wrap:wrap;
+      padding: 6px 0 2px;
+    }
+    .choice{
       border:0;
-      padding:12px 18px;
-      border-radius:999px;
-      font-weight:700;
+      background: transparent;
       cursor:pointer;
-      font-size:16px;
-      transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
-      box-shadow: 0 12px 30px rgba(0,0,0,.08);
+      padding:0;
       user-select:none;
-    }
-    button:active{transform: translateY(1px) scale(.99)}
-
-    .yes{
-      background: linear-gradient(135deg, var(--pink), var(--pink2));
-      color:white;
-    }
-    .yes:hover{box-shadow: 0 16px 38px rgba(255,45,109,.26)}
-
-    .no{
-      background:white;
-      color:var(--pink2);
-      border:1px solid rgba(255,45,109,.25);
-    }
-    .no:hover{box-shadow: 0 16px 38px rgba(255,45,109,.12)}
-
-    .msg{
-      margin-top:14px;
-      min-height:34px;
-      font-size:18px;
-      font-weight:650;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
-    /* Confetti hearts */
-    .float{
-      position:fixed;
-      top:-10vh;
-      left:0;
-      will-change: transform, opacity;
-      z-index:1;
-      pointer-events:none;
-      filter: drop-shadow(0 8px 14px rgba(0,0,0,.12));
-      font-size:22px;
-      opacity:.95;
+    .sticker{
+      position:relative;
+      width: 210px;
+      height: 76px;
+      display:grid;
+      place-items:center;
+      border-radius: 999px;
+      box-shadow: 0 14px 35px rgba(0,0,0,.18);
+      transition: transform .12s ease, filter .12s ease;
+      border: 1px solid rgba(255,255,255,.75);
+      overflow:hidden;
     }
+    .label{
+      font-weight: 1000;
+      letter-spacing: .6px;
+      font-size: 20px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .subLabel{display:block; font-weight:800; opacity:.9; margin-top:2px; font-size:12px}
 
-    /* Modal */
+    .choice:hover .sticker{transform: translateY(-2px) rotate(-.2deg); filter:brightness(1.02)}
+    .choice:active .sticker{transform: translateY(1px) scale(.99)}
+
+    .yes .sticker{
+      background: linear-gradient(135deg, #ffd1e8, #fff1b8);
+      animation: pulse 1.35s ease-in-out infinite;
+    }
+    .yes .sticker:before{
+      content:"";
+      position:absolute; inset:-40px -20px auto auto;
+      width:120px; height:120px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,105,180,.55), rgba(255,255,255,0) 62%);
+      transform: rotate(10deg);
+    }
+    @keyframes pulse{ 0%,100%{transform: translateY(0)} 50%{transform: translateY(-2px)} }
+
+    .no .sticker{
+      background: linear-gradient(135deg, #d7f2ff, #e9e3ff);
+      width: 170px;
+      height: 68px;
+      opacity:.96;
+      animation: wobble 2.2s ease-in-out infinite;
+    }
+    @keyframes wobble{ 0%,100%{transform: rotate(.2deg)} 50%{transform: rotate(-.35deg)} }
+
+    /* ===== Overlays ===== */
     .overlay{
-      position:fixed;
-      inset:0;
-      background: rgba(0,0,0,.35);
+      position:fixed; inset:0;
       display:none;
       place-items:center;
-      z-index:10;
-      padding:16px;
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(7px);
+      z-index:50;
+      padding:18px;
     }
+    .overlay.show{display:grid}
+
     .modal{
-      width:min(420px, 92vw);
-      background:#fff;
-      border-radius:22px;
-      padding:18px 18px 16px;
-      box-shadow: var(--shadow);
+      width:min(520px, 94vw);
+      background: rgba(255,255,255,.84);
+      border:1px solid rgba(255,255,255,.66);
+      border-radius: 28px;
+      box-shadow: 0 25px 70px rgba(0,0,0,.25);
+      padding:18px 18px 14px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .modal:before{
+      content:"";
+      position:absolute; inset:-60px -80px auto auto;
+      width:220px; height:220px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,192,203,.7), rgba(255,255,255,0) 60%);
+      transform: rotate(18deg);
+      pointer-events:none;
+    }
+    .modal h2{margin:6px 0 6px; font-size: 26px}
+    .modal p{margin:0 0 14px; font-weight:800; opacity:.92}
+    .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
+    .miniBtn{
+      border:0;
+      cursor:pointer;
+      padding:12px 16px;
+      border-radius: 999px;
+      font-weight:1000;
+      box-shadow: 0 12px 26px rgba(0,0,0,.14);
+      border: 1px solid rgba(255,255,255,.75);
+      background: linear-gradient(135deg, #ffe0f1, #fff6c8);
+      touch-action: manipulation;
+    }
+    .miniBtn.alt{
+      background: linear-gradient(135deg, #d7f2ff, #efe9ff);
+    }
+
+    /* ===== Love screen after "Forever" ===== */
+    .loveScreen{
+      position:fixed; inset:0;
+      display:none;
+      place-items:center;
+      z-index:40;
+      padding:18px;
       text-align:center;
     }
-    .modal h2{margin:6px 0 10px; font-size:22px}
-    .modal p{margin:0 0 14px}
-    .small{font-size:14px; opacity:.75; margin-top:10px}
+    body.love .loveScreen{display:grid}
+    body.love .panel{display:none}
 
-    .footer{
-      margin-top:10px;
-      font-size:13px;
-      opacity:.6;
+    .loveCard{
+      width:min(560px, 92vw);
+      background: rgba(255,255,255,.75);
+      border:1px solid rgba(255,255,255,.65);
+      border-radius: 36px;
+      box-shadow: 0 25px 80px rgba(0,0,0,.22);
+      backdrop-filter: blur(8px);
+      padding:16px 16px 14px;
+      overflow:hidden;
+      position:relative;
+    }
+    .loveCard:before{
+      content:"";
+      position:absolute; inset:-80px auto auto -90px;
+      width:260px; height:260px;
+      background: radial-gradient(circle at 40% 40%, rgba(255,192,203,.75), rgba(255,255,255,0) 62%);
+      transform: rotate(-10deg);
+      pointer-events:none;
+    }
+    .loveGif{
+      width:min(320px, 78vw);
+      aspect-ratio: 1/1;
+      margin:0 auto 10px;
+      border-radius: 34px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.7);
+      box-shadow: 0 14px 40px rgba(0,0,0,.16);
+      background: rgba(255,255,255,.2);
+    }
+    .loveGif img{width:100%;height:100%;object-fit:cover;display:block}
+    .loveTitle{
+      font-size: clamp(26px, 6vw, 44px);
+      margin:6px 0 4px;
+      font-weight: 1000;
+    }
+    .loveSub{
+      margin:0;
+      font-weight:800;
+      opacity:.9;
+    }
+
+    /* ===== Doom mode (keep intact) ===== */
+    body.doom .panel{display:none}
+    .doomMsg{
+      position:fixed; inset:0;
+      display:none;
+      place-items:center;
+      text-align:center;
+      padding:18px;
+      z-index:45;
+      color:#fff;
+      text-shadow: 0 2px 20px rgba(0,0,0,.6);
+    }
+    body.doom .doomMsg{display:grid}
+    .doomMsg h1{margin:0 0 8px; font-size: clamp(30px, 6vw, 64px); font-weight:1000}
+    .doomMsg p{margin:0; font-size: clamp(16px, 3vw, 22px); font-weight:800; opacity:.95}
+
+    /* ===== Mobile polish ===== */
+    @media (max-width: 520px){
+      .wrap{padding:14px}
+      .panel{padding:16px 14px 14px; border-radius: 38px 52px 44px 56px}
+      .top{gap:12px}
+      .gifBubble{width:min(230px, 78vw); border-radius: 30px}
+      .choices{gap:10px}
+      .sticker{width: 190px; height: 72px}
+      .no .sticker{width: 150px; height: 64px}
+      .label{font-size: 19px}
+    }
+
+    @media (max-width: 380px){
+      .sticker{width: 175px; height: 70px}
+      .no .sticker{width: 140px; height: 62px}
     }
   </style>
 </head>
+
 <body>
-  <div class="card">
-    <div class="gif">
-      <!-- Replace the src with YOUR favorite GIF link -->
-      <img
-        src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
-        alt="Cute valentine gif"
-      />
-    </div>
+  <div class="bg" id="bg"></div>
+  <div class="vignette"></div>
 
-    <h1>Will you be my Valentine? 💌</h1>
-    <p>(Only one correct answer… 😌)</p>
-
-    <div class="btnRow">
-      <button class="yes" id="yesBtn">Yes 💖</button>
-      <button class="no" id="noBtn">No 🙈</button>
-    </div>
-
-    <div class="msg" id="msg"></div>
-    <div class="footer">Made with love ✨</div>
+  <div class="clouds">
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
   </div>
 
-  <!-- Are you sure modal -->
-  <div class="overlay" id="overlay">
-    <div class="modal">
-      <h2>Are you sure? 🥺</h2>
-      <p>I’ll be really sad…</p>
-      <div class="btnRow">
-        <button class="yes" id="reconsiderBtn">Okay fine, YES 💘</button>
-        <button class="no" id="stillNoBtn">Still No 😶</button>
+  <div id="floatLayer"></div>
+
+  <div class="wrap">
+    <section class="panel" aria-live="polite">
+      <div class="top">
+        <div class="gifBubble" aria-hidden="true">
+          <img id="mainGif" alt="calm romantic gif" referrerpolicy="no-referrer"
+               src="https://media.giphy.com/media/hrGFiQ3sDtKLpmLWBk/giphy.gif">
+        </div>
+
+        <div class="copy">
+          <div class="q" id="question">Hey Tasnim Jahan! Will you be my valentine? 💌</div>
+          <div class="hint" id="hint">Tap your destiny 😌</div>
+
+          <div class="choices">
+            <button class="choice yes" id="yesBtn" aria-label="Yes">
+              <div class="sticker">
+                <div>
+                  <div class="label">YES 💖</div>
+                  <span class="subLabel">cute answer</span>
+                </div>
+              </div>
+            </button>
+
+            <button class="choice no" id="noBtn" aria-label="No">
+              <div class="sticker">
+                <div>
+                  <div class="label">NO 🙃</div>
+                  <span class="subLabel">risky</span>
+                </div>
+              </div>
+            </button>
+          </div>
+
+        </div>
       </div>
-      <div class="small">(You can change your mind anytime 😄)</div>
+    </section>
+  </div>
+
+  <!-- Are you sure -->
+  <div class="overlay" id="confirmOverlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2>Are you sure? 😳</h2>
+      <p id="confirmText">Like… *really* sure?</p>
+      <div class="row">
+        <button class="miniBtn alt" id="goBackBtn">Go back 💞</button>
+        <button class="miniBtn" id="imSureBtn">Yes, I’m sure 😬</button>
+      </div>
     </div>
   </div>
 
-  <script>
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const msg = document.getElementById("msg");
-    const overlay = document.getElementById("overlay");
-    const reconsiderBtn = document.getElementById("reconsiderBtn");
-    const stillNoBtn = document.getElementById("stillNoBtn");
+  <!-- S&T Forever popup (only one option: Forever) -->
+  <div class="overlay" id="foreverOverlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2>S&amp;T Forever 💘</h2>
+      <p>Officially certified by the Universe ✨</p>
+      <div class="row">
+        <button class="miniBtn" id="foreverBtn">Forever 💞</button>
+      </div>
+    </div>
+  </div>
 
-    let showerRunning = false;
+  <!-- Love screen -->
+  <div class="loveScreen" id="loveScreen">
+    <div class="loveCard">
+      <div class="loveGif">
+        <img id="loveGif" alt="i love you gif" referrerpolicy="no-referrer"
+             src="https://media.giphy.com/media/6xSCCCrqh5UqKADRb9/giphy.gif">
+      </div>
+      <div class="loveTitle">I love you 💖</div>
+      <p class="loveSub">Now come here. You owe me a hug. 🫶</p>
+    </div>
+  </div>
 
-    function startShower() {
-      if (showerRunning) return;
-      showerRunning = true;
+  <!-- Doom mode (kept) -->
+  <div class="doomMsg">
+    <div>
+      <h1>MISSION FAILED 💥🌍</h1>
+      <p>The earth has… exploded. (You did this.)</p>
+    </div>
+  </div>
 
-      msg.textContent = "YAYYY!! 💖😍🥰 You just made my day!";
-      msg.style.color = "#ff2d6d";
+<script>
+  // ===== GIFS (easy to swap) =====
+  const BG_WINDY   = "https://media.giphy.com/media/KZoFWq3X8t5S1OzDCv/giphy.gif"; // windy trees soothing
+  const BG_SPRING  = "https://media.giphy.com/media/U1iFjsL5EaLgk/giphy.gif";      // KEEP (your "second GIF")
+  const BG_EXPLODE = "https://media.giphy.com/media/one2t6IVCI8RG/giphy.gif";      // earth exploding (keep)
 
-      const emojis = ["💖","💘","💕","💝","❤️","😍","🥰","✨","😘","💞"];
+  // Ghibli-ish / Ghibli romantic calm GIFs for the Valentine parts:
+  const GIF_VALENTINE_1 = "https://media.giphy.com/media/hrGFiQ3sDtKLpmLWBk/giphy.gif";
+  const GIF_VALENTINE_2 = "https://media.giphy.com/media/VGACXbkf0AeGs/giphy.gif";
 
-      // spawn a bunch quickly
-      for (let i = 0; i < 120; i++) {
-        setTimeout(() => spawnFloat(emojis[Math.floor(Math.random()*emojis.length)]), i * 35);
-      }
+  // Love screen “I love you” GIF (swap if you want another)
+  const GIF_ILOVEYOU = "https://media.giphy.com/media/6xSCCCrqh5UqKADRb9/giphy.gif";
 
-      // and a gentle ongoing shower for a bit
-      const interval = setInterval(() => {
-        for (let i = 0; i < 6; i++) spawnFloat(emojis[Math.floor(Math.random()*emojis.length)]);
-      }, 280);
+  const bgEl = document.getElementById("bg");
+  const mainGif = document.getElementById("mainGif");
+  const question = document.getElementById("question");
+  const hint = document.getElementById("hint");
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn  = document.getElementById("noBtn");
 
-      setTimeout(() => clearInterval(interval), 6000);
-      setTimeout(() => (showerRunning = false), 6500);
+  const floatLayer = document.getElementById("floatLayer");
+
+  const confirmOverlay = document.getElementById("confirmOverlay");
+  const confirmText = document.getElementById("confirmText");
+  const goBackBtn = document.getElementById("goBackBtn");
+  const imSureBtn = document.getElementById("imSureBtn");
+
+  const foreverOverlay = document.getElementById("foreverOverlay");
+  const foreverBtn = document.getElementById("foreverBtn");
+
+  const loveScreen = document.getElementById("loveScreen");
+  const loveGif = document.getElementById("loveGif");
+
+  let stage = 1; // 1=valentine, 2=forever question, 3=popup shown, 4=love screen
+  let springTicker = null;
+
+  function setBg(url){
+    document.documentElement.style.setProperty("--bg", `url("${url}")`);
+  }
+  function rand(min, max){ return Math.random() * (max - min) + min; }
+
+  function floatEmoji(emoji, xPct){
+    const el = document.createElement("div");
+    el.className = "float";
+    el.textContent = emoji;
+    el.style.left = (xPct ?? rand(5,95)) + "vw";
+    el.style.bottom = "-40px";
+    el.style.fontSize = rand(18, 34) + "px";
+    el.style.animationDuration = rand(3.6, 6.6) + "s";
+    floatLayer.appendChild(el);
+    el.addEventListener("animationend", () => el.remove());
+  }
+
+  function burstHearts(){
+    const hearts = ["💖","💘","💕","💗","💞","❤️","✨","😍","🌸"];
+    for(let i=0;i<60;i++){
+      setTimeout(() => floatEmoji(hearts[Math.floor(Math.random()*hearts.length)]), i*18);
+    }
+  }
+
+  function startSpring(){
+    document.body.classList.add("spring");
+    if (springTicker) return;
+    springTicker = setInterval(() => {
+      const pool = ["💗","💖","💕","✨","🌸","💞"];
+      floatEmoji(pool[Math.floor(Math.random()*pool.length)]);
+    }, 260);
+  }
+  function stopSpring(){
+    document.body.classList.remove("spring");
+    if (springTicker){
+      clearInterval(springTicker);
+      springTicker = null;
+    }
+  }
+
+  function showConfirm(text){
+    confirmText.textContent = text;
+    confirmOverlay.classList.add("show");
+  }
+  function hideConfirm(){ confirmOverlay.classList.remove("show"); }
+
+  function showForeverPopup(){
+    foreverOverlay.classList.add("show");
+  }
+  function hideForeverPopup(){
+    foreverOverlay.classList.remove("show");
+  }
+
+  function goDoom(){
+    stopSpring();
+    document.body.classList.add("doom");
+    setBg(BG_EXPLODE);
+    mainGif.src = BG_EXPLODE; // show explosion GIF too
+    burstHearts(); // ironic sparkle 😭
+  }
+
+  function setStage(n){
+    stage = n;
+
+    if(stage === 1){
+      setBg(BG_WINDY);
+      mainGif.src = GIF_VALENTINE_1;
+      question.textContent = "Hey Tasnim Jahan! Will you be my valentine? 💌";
+      hint.textContent = "Tap your destiny 😌";
+      stopSpring();
     }
 
-    function spawnFloat(char) {
-      const el = document.createElement("div");
-      el.className = "float";
-      el.textContent = char;
-
-      const startX = Math.random() * 100; // vw
-      const size = 18 + Math.random() * 22;
-
-      el.style.left = startX + "vw";
-      el.style.fontSize = size + "px";
-
-      document.body.appendChild(el);
-
-      const drift = (Math.random() * 30 - 15); // vw drift
-      const duration = 2500 + Math.random() * 2200;
-      const rotate = (Math.random() * 360 - 180);
-
-      const startY = -12; // vh
-      const endY = 112;   // vh
-
-      const start = performance.now();
-
-      function tick(now) {
-        const t = Math.min(1, (now - start) / duration);
-        const ease = 1 - Math.pow(1 - t, 3);
-
-        const x = startX + drift * ease;
-        const y = startY + (endY - startY) * ease;
-        const r = rotate * ease;
-
-        el.style.transform = `translate(${x}vw, ${y}vh) rotate(${r}deg)`;
-        el.style.opacity = String(1 - t * 0.9);
-
-        if (t < 1) requestAnimationFrame(tick);
-        else el.remove();
-      }
-
-      requestAnimationFrame(tick);
+    if(stage === 2){
+      setBg(BG_SPRING);          // KEEP this background (your request)
+      mainGif.src = GIF_VALENTINE_2; // still calm/romantic
+      question.textContent = "Will you be my valentine forever? 💍💞";
+      hint.textContent = "Calm spring weather… and love all around 🌸";
+      startSpring();
     }
 
-    yesBtn.addEventListener("click", () => {
-      overlay.style.display = "none";
-      startShower();
-    });
+    if(stage === 3){
+      // show S&T Forever popup
+      burstHearts();
+      showForeverPopup();
+    }
 
-    noBtn.addEventListener("click", () => {
-      overlay.style.display = "grid";
-      msg.textContent = "";
-    });
+    if(stage === 4){
+      hideForeverPopup();
+      // show love screen with cute GIF + “I love you”
+      document.body.classList.add("love");
+      loveGif.src = GIF_ILOVEYOU;
+      burstHearts();
+      startSpring();
+      // lock buttons just in case
+      yesBtn.style.pointerEvents = "none";
+      noBtn.style.pointerEvents = "none";
+      yesBtn.style.opacity = ".6";
+      noBtn.style.opacity = ".6";
+    }
+  }
 
-    reconsiderBtn.addEventListener("click", () => {
-      overlay.style.display = "none";
-      startShower();
-    });
+  // init
+  setStage(1);
 
-    stillNoBtn.addEventListener("click", () => {
-      overlay.style.display = "none";
-      msg.textContent = "Okay… I’ll ask again later 😔💔";
-      msg.style.color = "#444";
-    });
+  yesBtn.addEventListener("click", () => {
+    if(stage === 1){
+      burstHearts();
+      setStage(2);
+      return;
+    }
+    if(stage === 2){
+      setStage(3);
+      return;
+    }
+  });
 
-    // Close modal if user clicks outside it
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) overlay.style.display = "none";
-    });
-  </script>
+  noBtn.addEventListener("click", () => {
+    if(stage === 1){
+      showConfirm("Are you sure? 😳 (The windy trees are judging you.)");
+      return;
+    }
+    if(stage === 2){
+      showConfirm("ARE YOU SURE? 😭 Forever is cute though…");
+      return;
+    }
+  });
+
+  goBackBtn.addEventListener("click", hideConfirm);
+
+  imSureBtn.addEventListener("click", () => {
+    hideConfirm();
+    goDoom();
+  });
+
+  foreverBtn.addEventListener("click", () => {
+    setStage(4);
+  });
+
+  // click outside to close overlays
+  confirmOverlay.addEventListener("click", (e) => {
+    if(e.target === confirmOverlay) hideConfirm();
+  });
+  foreverOverlay.addEventListener("click", (e) => {
+    if(e.target === foreverOverlay) hideForeverPopup();
+  });
+</script>
 </body>
 </html>
